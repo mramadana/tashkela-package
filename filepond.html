@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf8" />
+  <meta name="viewport" content="width=device-width" />
+
+  <title>file-test</title>
+
+  <link rel="icon" href="favicon.ico" />
+
+  <!-- pintura -->
+  <link rel="stylesheet" href="pintura.css" />
+
+  <!-- filepond -->
+  <link href="filepond.css" rel="stylesheet" type="text/css" />
+  <link href="filepond-plugin-file-poster.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<style>
+  label {
+    margin-bottom: 30px;
+    display: block;
+  }
+  .container {
+    width: 800px;
+    max-width: 100%;
+  }
+</style>
+
+<body>
+  
+  <div class="container">
+    <h1>tashkela editor</h1>
+    <form class="file-test">
+      <div>
+        <label for="">multiple</label>
+        <input type="file" name="photo[]" id="test_1" class="my-pond" multiple />
+      </div>
+      <div>
+        <label for="">single</label>
+        <input type="file" name="" id="test_2" class="my-pond" />
+      </div>
+      <div>
+        <label for="">single</label>
+        <input type="file" name="" id="test_3" class="my-pond" />
+      </div>
+
+    </form>
+
+  </div>
+
+  <script src="./jquery.js"></script>
+  <!-- added script -->
+  <script src="filepond-plugin-file-encode.js"></script>
+  <script src="pintura-iife.js"></script>
+  <script src="useEditorWithJQuery-iife.js"></script>
+
+  <!-- filepond -->
+  <script src="filepond.js"></script>
+  <script src="filepond-plugin-file-poster.js"></script>
+
+  <!-- filepond image editor plugin -->
+  <script src="FilePondPluginImageEditor.iife.js"></script>
+
+  <!-- filepond jquery adapter -->
+  <script src="filepond.jquery.js"></script>
+
+  <script>
+    // load Pintura adapter
+    useEditorWithJQuery(jQuery, pintura);
+    test = (error, file) => {
+      alert('ssss')
+      if (error) {
+        console.log('Oh no');
+        return;
+      }
+      console.log('ghghghgh');
+    }
+
+    // Register FilePond plugins
+    const {
+      openEditor,
+      createDefaultImageReader,
+      createDefaultImageWriter,
+      processImage,
+      getEditorDefaults,
+    } = $.fn.pintura;
+
+    $.fn.filepond.registerPlugin(
+      FilePondPluginImageEditor,
+      FilePondPluginFilePoster,
+      // added incode 
+      FilePondPluginFileEncode,
+      // corrects mobile image orientation
+
+    );
+
+    // Default FilePond field
+    var pond = $(".my-pond").filepond({
+      /* FilePond properties */
+      allowReorder: true,
+      filePosterMaxHeight: 150,
+
+      /* Image Editor plugin properties */
+      imageEditor: {
+        // used to create the editor, receives editor configuration, should return an editor instance
+        createEditor: openEditor,
+
+        // Required, used for reading the image data
+        imageReader: [createDefaultImageReader],
+
+        // optionally. can leave out when not generating a preview thumbnail and/or output image
+        imageWriter: [
+          createDefaultImageWriter,
+          // optional image writer instructions, this instructs
+          // the image writer to resize the image to match a width of 384 pixels
+          {
+            targetSize: {
+              width: 200,
+            },
+          },
+        ],
+
+        // used to generate poster images, runs an editor in the background
+        imageProcessor: processImage,
+
+        // Pintura Image Editor properties
+        editorOptions: {
+          // pass the editor default configuration options
+          ...getEditorDefaults(),
+
+          // we want a square crop
+          imageCropAspectRatio: 1,
+        },
+
+
+        // map legacy data objects to new imageState objects, uncomment if you've used FilePond with version 6 of Pintura and are loading old file metadata
+        // legacyDataToImageState: legacyDataToImageState,
+      },
+
+
+      onpreparefile: (fileItem, file) => {
+   
+        
+        setTimeout(() => {
+        
+        // console.log(JSON.parse($('input[type=hidden]')[0].value).data);
+        
+        console.log(JSON.parse($('.filepond--data input[type=hidden]')[0].value).data);
+
+
+        // console.log($(".file-test").serialize());
+
+      }, 100);
+      },
+    });
+
+
+  </script>
+
+
+
+
+</body>
+
+</html>
